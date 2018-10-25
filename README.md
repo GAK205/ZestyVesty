@@ -12,4 +12,6 @@ Here are some basic things about the light matrix.
 
 4. We initially wanted to vertically orient our matrix. I'm a little unsure if this would mess up all the code from the github I downloaded, but we can rotate the canvas by calling   options.pixel_mapper_config = "Rotate:90";
 
+5. add this submodule. git submodule add https://github.com/hzeller/rpi-rgb-led-matrix.git matrix
+
 
