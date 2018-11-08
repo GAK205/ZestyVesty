@@ -15,12 +15,12 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
 # init LED pwm
-#LED = 25 
+LED = 19 
 
-#GPIO.setup(LED, GPIO.OUT)
+GPIO.setup(LED, GPIO.OUT)
 
-#pwm_LED = GPIO.PWM(LED, 100)
-#pwm_LED.start(0)
+pwm_LED = GPIO.PWM(LED, 100)
+pwm_LED.start(0)
 
 
 # freely chosen SPI pins
@@ -85,5 +85,5 @@ if __name__ == "__main__":
         print("trim_pot:", trim_pot)
         print("normalized: ", round(trim_pot / 1024.0, 2))
         # display with LED in 100 steps
-        #pwm_LED.ChangeDutyCycle(int(trim_pot/10.2))
+        pwm_LED.ChangeDutyCycle(int(trim_pot/10.2))
         time.sleep(0.5)
