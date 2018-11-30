@@ -46,7 +46,7 @@ void setup() {
   right_strip.show(); // initialize all pixels to 'off'
   
   clearStrips();
-  fft_setup();
+//  fft_setup();
   rainbow_setup();
   red_blue_setup();
   soundLevel_setup();
@@ -56,7 +56,7 @@ void setup() {
 }
 
 void loop() {
-   // clearStrips();
+//    clearStrips();
 //    red_blue();
 //    rainbow();
 //    light_FFT();
