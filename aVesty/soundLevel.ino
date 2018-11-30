@@ -48,7 +48,7 @@ void soundLevel()
       numSound = 11;
    }
 
-   Serial.println(numSound);
+//   Serial.println(numSound);
 
     clearStrips();
     

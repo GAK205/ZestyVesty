@@ -1,4 +1,6 @@
 #include <Adafruit_NeoPixel.h>
+#include <Bounce2.h>
+
 
 #define LEFT_STRIP_PIN 9
 #define RIGHT_STRIP_PIN 11
@@ -8,10 +10,11 @@
 
 #define BRIGHTNESS_STEP 51 // step size for increasing or decreasing brightness
 
-
-
 #define SA_COLOR_STEP 25
 
+
+#define BUTTON_PIN_1 3 //Next Button
+#define BUTTON_PIN_2 5 //Prev Button
 
 //#define MIC_PIN A0
 //#define MIC_GAIN_PIN 6
@@ -29,14 +32,30 @@ Adafruit_NeoPixel left_strip = Adafruit_NeoPixel(LEFT_STRIP_NUM_LEDS, LEFT_STRIP
 Adafruit_NeoPixel right_strip = Adafruit_NeoPixel(RIGHT_STRIP_NUM_LEDS, RIGHT_STRIP_PIN, NEO_GRB + NEO_KHZ800);
 
 
-int pattern = 0; // current pattern
+// Instantiate NEXT Bounce object
+Bounce debouncer1 = Bounce(); 
 
-bool isOff = false;
+// Instantiate PREV Bounce object
+Bounce debouncer2 = Bounce(); 
+
+//Light Pattern
+int pattern = 0; // current pattern
 
 void setup() {
   Serial.begin(115200);
 
- 
+// Setup buttons with an internal pull-up : ==================
+  pinMode(BUTTON_PIN_1,INPUT_PULLUP);
+  debouncer1.attach(BUTTON_PIN_1);
+  debouncer1.interval(5); // interval in ms
+  
+  pinMode(BUTTON_PIN_2,INPUT_PULLUP);
+  // After setting up the button, setup the Bounce instance :
+  debouncer2.attach(BUTTON_PIN_2);
+  debouncer2.interval(5); // interval in ms
+
+
+//Initalize LED Strips: ======================================
   left_strip.setBrightness(max_brightness);
   left_strip.begin();
   left_strip.show(); // initialize all pixels to 'off'
@@ -46,55 +65,84 @@ void setup() {
   right_strip.show(); // initialize all pixels to 'off'
   
   clearStrips();
-//  fft_setup();
+  fft_setup();
   rainbow_setup();
   red_blue_setup();
   soundLevel_setup();
   spin_setup();
-//  spectrum_analyzer_setup();
   
 }
 
 void loop() {
-//    clearStrips();
-//    red_blue();
-//    rainbow();
-//    light_FFT();
-//    soundLevel();
+  pattern = 2;
+  
+  if (pattern == 0) {
+    Serial.println("Blank Pattern");
+    blankStrips();  
+  }
+  else if (pattern == 1) {
+    Serial.println("Rainbow Pattern");
+    rainbow();
+  }
+  else if (pattern == 2) {
+    Serial.println("FFT Pattern");
+    light_FFT();
+  }
+  else if (pattern == 3) {
+    Serial.println("Volume Pattern");
+    soundLevel();
+  }
+  else if (pattern == 4){
+    Serial.println("Spin Pattern");
     spin();
+  }
+  else if (pattern == 5){
+    Serial.println("Police Pattern");
+    red_blue();
+  }
+  else{
+    pattern = 0;
+  }
 
 }
 
 bool checkButtons() {
-//  if (digitalRead(BUTTON_2_PIN) == LOW && digitalRead(BUTTON_3_PIN) == LOW) {
-//    changePattern(3);
-//    return false;
-//  } else if (button2.update() && button2.fallingEdge()) decreaseMaxBrightness();
-//  else if (button3.update() && button3.fallingEdge()) increaseMaxBrightness();
-//
-//  if (button1.update() && button1.fallingEdge()) {
-//    changePattern();
-//    return false; // pattern has changed
-//  } else {
-//    return true; // pattern has not changed
-//  }
+  
+  debouncer1.update();
+  debouncer2.update();
+  
+  if (debouncer1.fallingEdge()) {
+//    Serial.println("next Pattern");
+    
+    int nextPattern = pattern + 1;
+    changePattern(nextPattern);
+    return false;
+  } 
+  else if (debouncer2.fallingEdge()) {
+//    Serial.println("prev Pattern");
+    
+    int prevPattern = pattern - 1;
+    changePattern(prevPattern);
+    return false;
+  }
+  else{
     return true;
+  }
 }
 
 void changePattern(int patternIn) {
   clearStrips();
-  if (patternIn == -1) pattern ++;
-  else pattern = patternIn;
-}
-
-void decreaseMaxBrightness() {
-  max_brightness -= BRIGHTNESS_STEP;
-  if (max_brightness < 0) max_brightness = 0;
-}
-
-void increaseMaxBrightness() {
-  max_brightness += BRIGHTNESS_STEP;
-  if (max_brightness > 255) max_brightness = 255;
+  //loop forwards
+  if (patternIn > 5){
+    pattern = 0;
+  }
+  //loop backwards
+  else if (patternIn < 0){
+    pattern = 5;
+  }
+  else{
+    pattern = patternIn;
+  }
 }
 
 void clearStrips() {
@@ -106,6 +154,19 @@ void clearStrips() {
   }
   left_strip.show();
   right_strip.show();
+}
+
+void blankStrips() {
+  while(checkButtons()){
+    for (int i=0; i < LEFT_STRIP_NUM_LEDS; i++) {
+      left_strip.setPixelColor(i, 0, 0, 0, 0);
+    }
+    for (int i=0; i < RIGHT_STRIP_NUM_LEDS; i++) {
+      right_strip.setPixelColor(i, 0, 0, 0, 0);
+    }
+    left_strip.show();
+    right_strip.show();
+  }
 }
 
 //COLORS=============================
