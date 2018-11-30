@@ -7,10 +7,16 @@
 MMA8452Q accel;
 
 #define SPIN_THRESHOLD 0.3
+#define CHECK_DELAY 5
+
+
 
 
 float a;
 float base;
+int last_time;
+int new_time;
+
 //float sum;
 //int counter;
 //float average;
@@ -21,13 +27,13 @@ void spin_setup()
 }
 
 void spin()
-{
+{ 
+  newtime = millis();
   accel.init(SCALE_2G, ODR_100); //data collection rate and acceleration scale
 
   delay(4000);
-   a = accel.cz; //initialze to the z accel
-
-   base = a;
+  a = accel.cz; //initialze to the z accel
+  base = a;
    
 //   counter = 0;
 //   sum = 0;
@@ -46,6 +52,7 @@ void spin()
 //calculate the change in y acceleration
 void findChange() 
 {
+  
   float a = accel.cz; //read in current acceleration
 
   
@@ -54,6 +61,7 @@ void findChange()
   Serial.print("\t");
   Serial.print("new:  .");
   Serial.print(a);
+  Serial.print("\t");
 
   //clockwise
   if (a > (base + SPIN_THRESHOLD)){
@@ -69,6 +77,10 @@ void findChange()
   //idle 
   else{
      Serial.print("idle");
+    if(new_time - last_time > CHECK_DELAY){
+      accel.read();
+      base = accel.cz;
+     }
   }
   Serial.println();
 }
