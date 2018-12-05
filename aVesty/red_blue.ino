@@ -37,7 +37,7 @@ void rb_setRed(uint8_t max_brightness) {
 		left_strip.setPixelColor(i, max_brightness, 0, 0, 0);
 	}
 	for (int i=0; i < RIGHT_STRIP_NUM_LEDS/2; i++) {
-		right_strip.setPixelColor(i, 0, 0, max_brightness, 0);
+		right_strip.setPixelColor(i, max_brightness, 0, 0, 0);
 	}
 }
 
@@ -46,6 +46,6 @@ void rb_setBlue(uint8_t max_brightness) {
 		left_strip.setPixelColor(i, 0, 0, max_brightness, 0);
 	}
 	for (int i=RIGHT_STRIP_NUM_LEDS/2; i < RIGHT_STRIP_NUM_LEDS; i++) {
-		right_strip.setPixelColor(i, max_brightness, 0, 0, 0);
+		right_strip.setPixelColor(i, 0, 0, max_brightness, 0);
 	}
 }

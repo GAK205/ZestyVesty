@@ -7,6 +7,11 @@
 MMA8452Q accel;
 
 float a;
+
+int lastMove;
+//update only after the movement has stopped
+int checkTime = 2000; //2s
+
 void spin_setup()
 {
   a = accel.cz; //initialze to the z accel
@@ -18,15 +23,16 @@ void spin_setup()
 void spin()
 {
    accel.init(SCALE_2G, ODR_100); //data collection rate and acceleration scale
+
+    lastMove = 0;
    
-    while(checkButtons){ //unsure if this is in the right place
+    while(checkButtons()){ //unsure if this is in the right place
       if (accel.available()){
       // First, use accel.read() to read the new variables:
       accel.read();
       findChange();
 
-      left_strip.show();
-      right_strip.show();
+      
     }
   }
 }
@@ -42,42 +48,40 @@ void findChange()
   
 //  Serial.print(a);
 //  Serial.print("\t");
-//  Serial.print(b)
+//  Serial.print(lastMove);
 //  Serial.print("\t");
-//  Serial.print("diff " + diff);
 
-  
-    if (diff > 0.2){
-       Serial.print("clockwise");
+
+    if (abs(diff) > 0.1){
+       Serial.print("move");
        for (int i=0; i < LEFT_STRIP_NUM_LEDS; i++) {
           left_strip.setPixelColor(i, max_brightness, 0, 0, 0);
         }
         for (int i=0; i < RIGHT_STRIP_NUM_LEDS; i++) {
            right_strip.setPixelColor(i, max_brightness, 0, 0, 0);
         }
-       delay(2000); 
+
+        left_strip.show();
+        right_strip.show();
+
+        delay(500);
     }
-    if (diff < -0.2){
-       Serial.print("counterclockwise");
-       for (int i=0; i < LEFT_STRIP_NUM_LEDS; i++) {
-          left_strip.setPixelColor(i, max_brightness, 0, 0, 0);
-        }
-        for (int i=0; i < RIGHT_STRIP_NUM_LEDS; i++) {
-           right_strip.setPixelColor(i, max_brightness, 0, 0, 0);
-        }
-       delay(2000);
-    }
-    else{
-      Serial.print("idle");
-      a = accel.cz; //reset the idle acceleration
+//    else{
+//      Serial.print("idle");
+      if(millis() - lastMove > checkTime){
+        a = accel.cz; //reset the idle acceleration
+      }
+      
       for (int i=0; i < LEFT_STRIP_NUM_LEDS; i++) {
             left_strip.setPixelColor(i, 0, max_brightness, 0, 0);
           }
           for (int i=0; i < RIGHT_STRIP_NUM_LEDS; i++) {
              right_strip.setPixelColor(i, 0, max_brightness, 0, 0);
           }
-      }
+//      }
+
+      left_strip.show();
+      right_strip.show();
 
       Serial.println();
-    
 }

@@ -68,7 +68,7 @@ void light_FFT() {
 //        Serial.print("Level ");
 //        Serial.print(i);
 //        Serial.print(": ");
-        Serial.println(levels[i]);
+//        Serial.println(levels[i]);
         if(levels[i] > peakMax){
           peakMax = levels[i];
         } 
@@ -83,7 +83,7 @@ void light_FFT() {
       ratio = levels[i]/peakMax;
 
       brightness = ratio*max_brightness;
-      
+    
 //      Serial.print("brightness");
 //      Serial.print(i);
 //      Serial.print(": ");
@@ -91,25 +91,16 @@ void light_FFT() {
 
 
       left_strip.setPixelColor(i, 0, 0, ratio*max_brightness, 0);
-
+      right_strip.setPixelColor(i, 0, 0, ratio*max_brightness, 0);
+      
       //gradient lighting
 //      left_strip.setPixelColor(i, (SA_COLOR_STEP*i + 255), (255 - SA_COLOR_STEP*i),0, 0);
     
     }
     
-    Serial.println("==================");
+//    Serial.println("==================");
 
-  left_strip.show();
+    left_strip.show();
+    right_strip.show();
   }
 }
-
-//bool exists(double val) {
-//  bool a = false;
-//  int key[] = {375, 625, 875, 1000, 1250, 1375, 1625, 1875, 2000, 2375, 2813, 3000, 3250};
-//  for (int i = 0; i < 13; i++){
-//    if (val == key[i]){
-//      a = true;
-//    }
-//  }
-//return true;
-//}

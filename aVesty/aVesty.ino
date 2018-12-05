@@ -74,7 +74,6 @@ void setup() {
 }
 
 void loop() {
-  pattern = 2;
   
   if (pattern == 0) {
     Serial.println("Blank Pattern");
@@ -112,14 +111,14 @@ bool checkButtons() {
   debouncer2.update();
   
   if (debouncer1.fallingEdge()) {
-//    Serial.println("next Pattern");
+    Serial.println("next Pattern");
     
     int nextPattern = pattern + 1;
     changePattern(nextPattern);
     return false;
   } 
   else if (debouncer2.fallingEdge()) {
-//    Serial.println("prev Pattern");
+    Serial.println("prev Pattern");
     
     int prevPattern = pattern - 1;
     changePattern(prevPattern);
@@ -149,7 +148,7 @@ void clearStrips() {
   for (int i=0; i < LEFT_STRIP_NUM_LEDS; i++) {
     left_strip.setPixelColor(i, 0, 0, 0, 0);
   }
-  for (int i=0; i < RIGHT_STRIP_NUM_LEDS; i++) {
+  for (int i=0; i < RIGHT_STRIP_NUM_LEDS+1; i++) {
     right_strip.setPixelColor(i, 0, 0, 0, 0);
   }
   left_strip.show();
@@ -161,7 +160,7 @@ void blankStrips() {
     for (int i=0; i < LEFT_STRIP_NUM_LEDS; i++) {
       left_strip.setPixelColor(i, 0, 0, 0, 0);
     }
-    for (int i=0; i < RIGHT_STRIP_NUM_LEDS; i++) {
+    for (int i=0; i < RIGHT_STRIP_NUM_LEDS+1; i++) {
       right_strip.setPixelColor(i, 0, 0, 0, 0);
     }
     left_strip.show();
