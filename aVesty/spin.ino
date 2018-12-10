@@ -26,31 +26,21 @@ void spin()
 
     lastMove = 0;
    
-    while(checkButtons()){ //unsure if this is in the right place
+    while(checkButtons()){ //button clicking
       if (accel.available()){
       // First, use accel.read() to read the new variables:
       accel.read();
+      // Then, call findChange() to calculate whether the person is accelerating (spinning).
       findChange();
-
-      
     }
   }
 }
 
-
-
-
-//calculate the change in y acceleration
+//calculate the change in z acceleration
 void findChange() 
 {
   float b = accel.cz; //new z accel
-  float diff = a-b;
-  
-//  Serial.print(a);
-//  Serial.print("\t");
-//  Serial.print(lastMove);
-//  Serial.print("\t");
-
+  float diff = a-b; //find the difference in accelerations
 
     if (abs(diff) > 0.1){
        Serial.print("move");
@@ -60,25 +50,19 @@ void findChange()
         for (int i=0; i < RIGHT_STRIP_NUM_LEDS; i++) {
            right_strip.setPixelColor(i, max_brightness, 0, 0, 0);
         }
-
         left_strip.show();
         right_strip.show();
-
         delay(500);
     }
-//    else{
-//      Serial.print("idle");
-      if(millis() - lastMove > checkTime){
+      if(millis() - lastMove > checkTime){ //check to see how much time has passed
         a = accel.cz; //reset the idle acceleration
       }
-      
       for (int i=0; i < LEFT_STRIP_NUM_LEDS; i++) {
             left_strip.setPixelColor(i, 0, max_brightness, 0, 0);
           }
           for (int i=0; i < RIGHT_STRIP_NUM_LEDS; i++) {
              right_strip.setPixelColor(i, 0, max_brightness, 0, 0);
           }
-//      }
 
       left_strip.show();
       right_strip.show();
