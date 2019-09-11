@@ -1,6 +1,8 @@
 ZestyVesty, ESE 205
 
-Members: Kenneth McNelly, Gillian Laming, Andre Cook 
+Members: Kenneth McNelly, Gillian Laming
+
+Demonstration: https://www.youtube.com/watch?v=_yCTgUWRKNo
 
 Our work:
 - all code can be found inside the folder aVesty
